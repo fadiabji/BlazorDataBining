@@ -1,0 +1,189 @@
+﻿@page "/"
+@using System.Globalization;
+
+<h5>DataBinding</h5>
+<br />
+
+<p>
+    Name: @person.SealsPrson;
+</p>
+<p>
+    Amount: @person.Amount.ToString("C", new CultureInfo("se-SE"));
+</p>
+<p>
+    <lable>Amount:</lable>
+    <input type="number"
+           @bind="person.Amount"
+           @bind:event="oninput" 
+           />
+    <br />
+    
+    <lable>Amount:</lable>
+    <input  type="number" 
+            @bind-value = "person.Amount"
+            @bind-value:event ="oninput"
+            />
+</p>
+
+<p>
+    <lable>
+    <input  type="checkbox"
+            @bind-value="person.IsActive" 
+            />
+            &nbsp;Is Active
+    </lable> <br />
+    Is Active: @person.IsActive
+</p>
+<p>
+    @*if you change the value down which is selectedGroup to 1 or  2 you will see which button is selected by default*@
+    <lable>
+        <input type="radio"
+               value="1"
+               name="group"
+               checked="@(selectedGroup == 1)"
+               />1
+    </lable>
+    <lable>
+        <input type="radio"
+               value="2"
+               name="group"
+               checked="@(selectedGroup == 2)" />2
+    </lable>
+
+</p>
+
+
+<p>
+   
+    <lable>
+        <input type="radio"
+               value="1"
+               name="group"
+               checked="@(selectedGroup == 1)" 
+               @onclick ="()=>selectedGroup = 1"/>1
+    </lable>
+    <lable>
+        <input type="radio"
+               value="2"
+               name="group"
+               checked="@(selectedGroup == 2)"
+               @onclick = "()=>selectedGroup = 2"/>2
+    </lable>
+    <br />
+    @selectedGroup
+</p>
+
+<p>
+    @*dropdown*@
+    <select @bind="selectedLocatinId">
+        <option value = "0"></option>
+        @foreach( var location in person.Locations)
+        {
+            <option value="@location.Id">@location.City</option>
+        }
+    </select>
+    <br />
+    @selectedLocatinId
+</p>
+
+<p>
+    @*List*@
+    <ul>
+        @foreach(var location in person.Locations)
+        {
+            <li>@location.City, @location.provstate, @location.Country</li>
+        }
+    </ul>
+</p>
+
+<p>
+    @*Table*@
+    <table class="table">
+        @foreach(var location in person.Locations)
+        {
+            <tr>
+                <td> @location.Id</td>
+                <td> @location.City</td>
+                <td> @location.provstate</td>
+                <td> @location.Country</td>
+            </tr>
+        }
+    </table>
+</p>
+
+
+<p>
+    @*Table*@
+    <table class="table">
+        @foreach (var location in person.Locations)
+        {
+            <tr>
+                <td> @location.Id</td>
+                <td> <input type="text"
+                            class="form-control"
+                            @bind-value = "@location.City"
+                            @bind-value:event ="oninput"/>                    
+                </td>
+                <td>
+                    <input type="text"
+                           class="form-control"
+                       @bind-value="@location.provstate"
+                       @bind-value:event="oninput" />
+                </td>
+                <td>
+                    <input type="text"
+                           class="form-control"
+                       @bind-value="@location.Country"
+                       @bind-value:event="oninput" />
+                </td>
+            </tr>
+        }
+    </table>
+</p>
+
+@code{
+    IndexViewModel person = null;
+    // if you change this value to 2 you will see the radio button will change to 2 as initial value
+    int selectedGroup = 1;
+
+    int selectedLocatinId = 0;
+
+
+    protected override Task OnInitializedAsync()
+    {
+
+        person = new IndexViewModel
+            {
+                SealsPrson = "Fadi",
+                Amount = System.Convert.ToDecimal("35000.11"),
+                IsActive = true,
+                Locations = new List<Location>
+                {
+                    new Location {Id=1, City="Linkoping", provstate="Ostergoteland", Country="Sweden"},
+                    new Location {Id=2, City="Norrkoping", provstate="Osetergoteland", Country="Sweden"}
+                }
+            };
+            return base.OnInitializedAsync();
+    }
+
+
+    //ViewModel
+    class IndexViewModel
+    {
+        public string? SealsPrson { get; set; }
+        public decimal Amount { get; set; }
+        public bool IsActive { get; set; }
+        public List<Location>? Locations { get; set; }
+    }
+
+    class Location
+    {
+        public int Id { get; set; }
+        public string? City { get; set; }
+        public string? provstate { get; set; }
+        public string? Country { get; set; }
+
+    }
+    // End View Model
+}
+
